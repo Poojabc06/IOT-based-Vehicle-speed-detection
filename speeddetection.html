@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vehicle Speed Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 320px;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    .value {
+      font-size: 2em;
+      margin: 10px 0;
+    }
+    .overspeed {
+      font-weight: bold;
+      color: red;
+    }
+    .normal {
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Vehicle Speed Monitor</h2>
+  <div class="value">Speed: <span id="speed">--</span> km/h</div>
+  <div>Status: <span id="status" class="normal">--</span></div>
+</div>
+
+<script>
+  // Your Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBVQaAMMib4bwTbX4B_EJpNuvvdPl-jDKg",
+    authDomain: "myiot-b2f88.firebaseapp.com",
+    databaseURL: "https://myiot-b2f88-default-rtdb.firebaseio.com",
+    projectId: "myiot-b2f88",
+    storageBucket: "myiot-b2f88.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Reference to vehicleSpeed data
+  var dbRef = firebase.database().ref("vehicleSpeed");
+
+  dbRef.on("value", function(snapshot) {
+    var data = snapshot.val();
+    if (data) {
+      document.getElementById("speed").textContent = data.speed_kmh.toFixed(2);
+      var statusElem = document.getElementById("status");
+
+      if (data.overspeed) {
+        statusElem.textContent = "Overspeed!";
+        statusElem.className = "overspeed";
+      } else {
+        statusElem.textContent = "Normal";
+        statusElem.className = "normal";
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
